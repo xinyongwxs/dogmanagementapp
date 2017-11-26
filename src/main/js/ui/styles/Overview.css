@@ -1,0 +1,23 @@
+@import '~antd/dist/antd.css';
+
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+.container {
+	margin: 0 auto;
+}
+
+.btn {
+	margin-left: 63px;
+}
+
+.btn-row {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.select {
+	margin-left: 5px;
+}

@@ -1,0 +1,12 @@
+target/
+.settings/
+.classpath
+.idea
+.project
+node_modules/
+src/main/resources/static/built
+bin/
+gradle/
+WebContent/
+build/
+.gradle/
