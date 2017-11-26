@@ -304,6 +304,7 @@ export default class Overview extends React.Component {
 		return (<div>
 			<Row className="btn-row" type="flex" justify="start">
 				<Col><Button className="btn" type="primary" onClick={this.refresh.bind(this)}>刷新</Button></Col>
+				<Col><Button className="btn" type="primary" onClick={this.refresh.bind(this)}>增加</Button></Col>
 				<Col><Select className="btn" defaultValue="BreedingDog" style={{ width: 120 }} onChange={this.handleDogTypeChange.bind(this)}>
 				      <Option value="BreedingDog">生育犬</Option>
 				      <Option value="WorkingDog">工作犬</Option>
@@ -317,6 +318,7 @@ export default class Overview extends React.Component {
 					{table}
 				</Col>
 			</Row>
+			
 		</div>);
 	}
 }
