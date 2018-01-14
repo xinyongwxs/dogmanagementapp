@@ -1,20 +1,19 @@
 package com.ws.dog.management.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import java.util.Collection;
+import java.util.Optional;
 
-import com.ws.dog.management.repository.UserRepository;
+import com.ws.dog.management.entity.User;
+import com.ws.dog.management.model.UserCreateForm;
 
-public class UserService implements UserDetailsService {
+public interface UserService {
 
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findOneByUsername(username);
-	}
+    Optional<User> getUserById(long id);
+
+    Optional<User> getUserByEmail(String email);
+
+    Collection<User> getAllUsers();
+
+    User create(UserCreateForm form);
 
 }

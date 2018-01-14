@@ -1,80 +1,68 @@
 package com.ws.dog.management.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 @Entity
-@Table(name = "users")
-public class User implements UserDetails {
+@Table(name = "user")
+public class User {
 
-	private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
+    private Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "user_id", nullable = false, updatable = false)
-	private Long id;
-	
-	@Column(name = "username", nullable = false, unique = true)
-	private String username;
-	
-	@Column(name = "password", nullable = false)
-	private String password;
-	
-	@Column(name = "enabled", nullable = false)
-	private boolean enabled;
-	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		
-		return authorities;
-	}
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return password;
-	}
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return username;
-	}
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return enabled;
-	}
-	
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email.replaceFirst("@.*", "@***") +
+                ", passwordHash='" + passwordHash.substring(0, 10) +
+                ", role=" + role +
+                '}';
+    }
 }

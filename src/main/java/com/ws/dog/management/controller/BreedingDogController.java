@@ -21,13 +21,13 @@ public class BreedingDogController {
 	public BreedingDogService breedingDogService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody List<BreedingDog> getAll() {
+	public List<BreedingDog> getAll() {
 		List<BreedingDog> wdList = breedingDogService.getAll();
 		return wdList;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody String AddDogs(@RequestBody List<BreedingDog> dogs) {
+	public String AddDogs(@RequestBody List<BreedingDog> dogs) {
 		if (dogs.size() > 0) {
 			breedingDogService.AddDogs(dogs);
 		}
@@ -40,7 +40,7 @@ public class BreedingDogController {
 	}
 	
 	@RequestMapping(value = "/filtered", method = RequestMethod.POST)
-	public @ResponseBody List<BreedingDog> getAllByFilter(@RequestBody DogFilterModel filterObj) {
+	public List<BreedingDog> getAllByFilter(@RequestBody DogFilterModel filterObj) {
 		List<BreedingDog> result = breedingDogService.getAllByFilter(filterObj.getLimit(), 
 				filterObj.getOffset(), filterObj.getFilter(), filterObj.getOrderByName(), filterObj.getSortMethod());
 		return result;
