@@ -15,6 +15,8 @@ import com.ws.dog.management.services.UserService;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -52,5 +54,11 @@ public class UserServiceImpl implements UserService {
         user.setRole(form.getRole());
         return userRepository.save(user);
     }
+
+	@Override
+	public Boolean login(HttpServletResponse response, String userName, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
