@@ -1,18 +1,29 @@
 package com.ws.dog.management.entity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "user")
 public class User {
-
+	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
@@ -23,10 +34,9 @@ public class User {
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
-
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    
+    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    private Set<RoleEntity> roles = new HashSet<RoleEntity>();
 
     public Long getId() {
         return id;
@@ -45,24 +55,33 @@ public class User {
     }
 
     public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+        this.passwordHash = PASSWORD_ENCODER.encode(passwordHash);
     }
 
-    public Role getRole() {
-        return role;
-    }
+	public Set<RoleEntity> getRoles() {
+		return roles;
+	}
+	
+	public String[] getRoleStrs() {
+		List<String> roleList = new ArrayList<String>();
+		Role[] roleArray = (Role[])this.getRoles().toArray();
+		for (int i = 0; i < roleArray.length; i++) {
+			roleList.add(roleArray[i].name());
+		}
+		return (String[])roleList.toArray();
+	}
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+	public void setRoles(Set<RoleEntity> roles) {
+		this.roles = roles;
+	}
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email.replaceFirst("@.*", "@***") +
-                ", passwordHash='" + passwordHash.substring(0, 10) +
-                ", role=" + role +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "id=" + id +
+//                ", email='" + email.replaceFirst("@.*", "@***") +
+//                ", passwordHash='" + passwordHash.substring(0, 10) +
+//                ", role=" + role +
+//                '}';
+//    }
 }
