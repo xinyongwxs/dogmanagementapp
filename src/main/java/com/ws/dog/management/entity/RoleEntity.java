@@ -1,12 +1,16 @@
 package com.ws.dog.management.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "role")
 public class RoleEntity {
     public Long getId() {
 		return id;
@@ -22,6 +26,10 @@ public class RoleEntity {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+	
+	public RoleEntity(Role role) {
+		this.setRole(role);
 	}
 
 	@Id
