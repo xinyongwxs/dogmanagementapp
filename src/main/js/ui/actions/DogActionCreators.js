@@ -12,5 +12,14 @@ export default {
 				data: data
 			});
 		});
+	},
+	login: (formData) => {
+		return DogService.login(formData).then((data) => {
+			AppDispatcher.dispatch({
+				type: ActionTypes.LOGIN,
+				data: data
+			});
+		});
 	}
+
 }

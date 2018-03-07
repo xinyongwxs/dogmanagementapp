@@ -1,7 +1,8 @@
 import keyMirror from 'keymirror';
 
 export const ActionTypes = keyMirror({
-	DOG_LIST: null
+	DOG_LIST: null,
+	LOGIN: null
 });
 
 export const DeviceTypes = keyMirror({

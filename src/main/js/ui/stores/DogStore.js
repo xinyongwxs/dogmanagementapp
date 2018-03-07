@@ -7,12 +7,28 @@ var DogStore = Object.assign({}, EventEmitter.prototype, {
 		this.emitChange(data);
 	},
 
+	login: function(data) {
+		this.emitLogin(data);
+	},
+
 	emitChange: function(param) {
 		this.emit("change", param);
 	},
 
+	emitLogin: function(param) {
+		this.emit("login", param);
+	},
+
 	addChangeListener: function(callback) {
 		this.on("change", callback);
+	},
+
+	addLoginListener: function(callback) {
+		this.on("login", callback);
+	},
+
+	removeLoginListener: function(callback) {
+		this.removeListener("login", callback);
 	},
 
 	removeChangeListener: function(callback) {
@@ -23,6 +39,9 @@ var DogStore = Object.assign({}, EventEmitter.prototype, {
 		switch(payload.type) {
 			case ActionTypes.DOG_LIST:
 				DogStore.dogList(payload.data);
+				break;
+			case ActionTypes.LOGIN:
+				DogStore.login(payload.data);
 				break;
 		}
 		return true;

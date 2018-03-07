@@ -19,5 +19,15 @@ export default {
 		});
 
 		return promise;
+	},
+	login: (formData) => {
+		let path = "/user/login";
+		let promise = client({
+			method: "POST",
+			path: path,
+			entity: formData,
+			headers: {'Content-Type': 'multipart/form-data'}
+		});
+		return promise;
 	}
 }
