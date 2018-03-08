@@ -27,10 +27,10 @@ public class RoleEntity {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
-	public RoleEntity(Role role) {
-		this.setRole(role);
-	}
+//	
+//	public RoleEntity(Role role) {
+//		this.setRole(role);
+//	}
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -35,7 +35,7 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
     
-    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
     private Set<RoleEntity> roles = new HashSet<RoleEntity>();
 
     public Long getId() {
@@ -63,12 +63,12 @@ public class User {
 	}
 	
 	public String[] getRoleStrs() {
-		List<String> roleList = new ArrayList<String>();
-		Role[] roleArray = (Role[])this.getRoles().toArray();
+		Object[] roleArray = this.getRoles().toArray();
+		String[] roleList = new String[roleArray.length];
 		for (int i = 0; i < roleArray.length; i++) {
-			roleList.add(roleArray[i].name());
+			roleList[i] = roleArray[i].toString();
 		}
-		return (String[])roleList.toArray();
+		return roleList;
 	}
 
 	public void setRoles(Set<RoleEntity> roles) {
