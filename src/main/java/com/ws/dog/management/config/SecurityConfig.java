@@ -25,8 +25,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-		.antMatchers("/built/*.js", "/breedingdog").permitAll()
+		http.authorizeRequests().antMatchers("/oauth/**").authenticated()
+		.antMatchers("/built/*.js").permitAll()
 //		.antMatchers("/breedingdog").hasRole("ADMIN")
 		.anyRequest().authenticated().and().formLogin()
 		.defaultSuccessUrl("/", true)
