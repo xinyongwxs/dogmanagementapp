@@ -1,5 +1,6 @@
 import Overview from '../components/Overview';
 import LoginForm from '../components/LoginForm';
+import Layout from '../components/Layout';
 import React from "react";
 import { render } from "react-dom";
 import {
@@ -18,7 +19,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		return <div className="container"><Overview /></div>;
+		return <div className="container"><Layout /></div>;
 	}
 }
 

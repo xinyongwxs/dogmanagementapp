@@ -30,13 +30,14 @@ public class DatabaseLoader implements CommandLineRunner {
 //		adminUser.setEmail("xinyongwxs@163.com");
 //		adminUser.setPasswordHash("Initial1");
 //		Set<RoleEntity> roleSet = new HashSet<RoleEntity>();
-//		roleSet.add(new RoleEntity(Role.ADMIN));
+//		RoleEntity re = new RoleEntity();
+//		re.setRole(Role.ADMIN);
+//		roleSet.add(re);
 //		adminUser.setRoles(roleSet);
 ////		userRepository.exists(adminUser);
 //		List<User> userList = new ArrayList<User>();
 //		userList.add(adminUser);
 //		userRepository.save(userList);
-//		
 //		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("xinyongwxs@163.com", 
 //				"doesn't matter", AuthorityUtils.createAuthorityList(Role.ADMIN.toString())));
 	}
