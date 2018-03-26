@@ -22,7 +22,8 @@ class Layout extends React.Component {
 				widthNum: widthNumTemp,
 				heightNum: widthNumTemp,
 				leftNum: 0,
-				topNum: 0
+				topNum: 0,
+				itemIndex: i
 			});
 		}
 
@@ -38,12 +39,20 @@ class Layout extends React.Component {
 			gridLayout.push(gridLayoutLine);
 		}
 
-		
+		/*
+			exception:
+			0 3*3
+			1 1*1
+			2 3*3
+			3 1*1
+			4 2*2
+		*/
 		line.forEach((val, idx, theLines) => {
 			let leftNumber = 0;
 			let rightNumber = 0;
 			let tempLeftStart = 0;
 			let tempTopStart = 0;
+			theLines[idx].itemIndex = idx;
 			gridLayout.some((gridLine, ii, theArray) => {
 				let capacity = 0;
 				let tempStart = 0;
@@ -58,6 +67,12 @@ class Layout extends React.Component {
 					else if (unit === 0) {
 						capacity++;
 						if (capacity >= val.widthNum) {
+							//Judge whether the vertical capacity is enough or not.
+							for (let a = 0; a < val.heightNum; a++) {
+								if (gridLayout[ii + a][jj] > 0) {
+									return false;
+								}
+							}
 							isAvailable = true;
 							return true;
 						}
@@ -123,7 +138,8 @@ class Layout extends React.Component {
 									widthNum={val.widthNum}
 									heightNum={val.heightNum} 
 									leftNum={val.leftNum}
-									topNum={val.topNum} />));
+									topNum={val.topNum}
+									itemIndex={val.itemIndex} />));
 		});
 		return (<div style={containerStyle}>
 				{layout}

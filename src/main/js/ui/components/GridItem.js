@@ -34,10 +34,13 @@ export default class GridItem extends React.Component {
 			position: "absolute",
 			marginLeft: leftNum * widthUnit,
 			marginTop: topNum * heightUnit,
-			backgroundColor: "blue"
+			backgroundColor: "blue",
+			textAlign: "center",
+			fontSize: 40,
+			lineHeight: heightNum * heightUnit + "px"
 		};
 		return (<div style={gridItemStyle}>
-			
+			{this.props.itemIndex}
 		</div>);
 	}
 }

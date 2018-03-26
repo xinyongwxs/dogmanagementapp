@@ -29,8 +29,8 @@ render((<Router history={browserHistory}>
 	<div>
 		<Switch>
 			<Route path="/loginDog" component={LoginForm} />
-			<Route path="/home" component={App} />
-			<Redirect to="/home" />
+			<Route path="/" component={App} />
+			<Redirect to="/" />
 		</Switch>
 	</div>
 </Router>), document.getElementById("react"));
