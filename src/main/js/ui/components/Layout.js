@@ -13,10 +13,27 @@ class Layout extends React.Component {
 		let gridLayout = [];
 		let gridHeightNum = 0;
 
-		//Initialize the width and height of grid items
+		// Initialize the width and height of grid items
 		for (let i = 0; i < 5; i++) {
 			let widthNumTemp = Math.ceil(Math.random() * 3);
 			let heightNumTemp = Math.ceil(Math.random() * 3);
+			// if (i === 0) {
+			// 	widthNumTemp = 3;
+			// 	heightNumTemp = 3;
+			// } else if (i === 1) {
+			// 	widthNumTemp = 1;
+			// 	heightNumTemp = 1;
+			// } else if (i === 2) {
+			// 	widthNumTemp = 3;
+			// 	heightNumTemp = 3;
+			// } else if (i === 3) {
+			// 	widthNumTemp = 1;
+			// 	heightNumTemp = 1;
+			// } else if (i === 4) {
+			// 	widthNumTemp = 2;
+			// 	heightNumTemp = 2;
+			// }
+
 			gridHeightNum += heightNumTemp;
 			line.push({
 				widthNum: widthNumTemp,
@@ -26,6 +43,7 @@ class Layout extends React.Component {
 				itemIndex: i
 			});
 		}
+
 
 		this.containerHeightNum = gridHeightNum;
 
@@ -52,16 +70,28 @@ class Layout extends React.Component {
 			let rightNumber = 0;
 			let tempLeftStart = 0;
 			let tempTopStart = 0;
-			theLines[idx].itemIndex = idx;
+			// theLines[idx].itemIndex = idx;
 			gridLayout.some((gridLine, ii, theArray) => {
 				let capacity = 0;
 				let tempStart = 0;
 				let isAvailable = false;
-				gridLine.some((unit, jj) => {
+				gridLine.some((unit, jj, theLine) => {
 					//Mark the temp start of item
 					if (unit === 0 && capacity === 0) {
 						tempStart = jj;
 						capacity++;
+						if (jj === theLine.length - 1) {
+							if (capacity >= val.widthNum) {
+								//Judge whether the vertical capacity is enough or not.
+								for (let a = 0; a < val.heightNum; a++) {
+									if (gridLayout[ii + a][jj] > 0) {
+										return false;
+									}
+								}
+								isAvailable = true;
+								return true;
+							}
+						}
 					}
 					//Add capacity if unit is empty
 					else if (unit === 0) {
