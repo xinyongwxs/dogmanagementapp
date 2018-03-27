@@ -146,7 +146,19 @@ class Layout extends React.Component {
 		let leastIdx = 0;
 
 		let gridLayout = this.freshGridLayout();
-		
+		let min = gridLayout[0][0];
+		gridLayout.forEach((li, lineNum) => {
+			li.forEach((item, idx) => {
+				let tempDistance = Math.sqrt((min.left - x) * (min.left - x) + (min.top - y) * (min.top - y));
+				let itemDistance = Math.sqrt((item.left - x) * (item.left - x) + (item.top - y) * (item.top - y));
+				if (tempDistance > itemDistance) {
+					min = item;
+				}
+			});
+		});
+		//Pass the specific item object, update the leftNum and topNum and then 
+		//occupy the grids according to the grid which is the nearest to the selected item first,
+		// the second or the last, reorg the other grid items.
 	}
 
 	render() {
