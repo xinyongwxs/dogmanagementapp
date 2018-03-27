@@ -6,15 +6,16 @@ import GridItem from "./GridItem";
 class Layout extends React.Component {
 	constructor() {
 		super();
-		this.gridWidth = 300;
-		this.gridHeight = 180;
-		this.containerWidthNum = 4;
+		this.gridWidth = 150;
+		this.gridHeight = 100;
+		this.containerWidthNum = 7;
+		this.widthOffset = 0;
 		let line = [];
 		let gridLayout = [];
 		let gridHeightNum = 0;
 
 		// Initialize the width and height of grid items
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 8; i++) {
 			let widthNumTemp = Math.ceil(Math.random() * 3);
 			let heightNumTemp = Math.ceil(Math.random() * 3);
 			// if (i === 0) {
@@ -48,6 +49,17 @@ class Layout extends React.Component {
 		this.containerHeightNum = gridHeightNum;
 
 		//Initialize grid layout
+		gridLayout = this.freshGridLayout();
+
+		this.boxingGridItems(line, gridLayout);
+
+		this.state = {
+			gridItemMatrix: line
+		};
+	}
+
+	freshGridLayout() {
+		let gridLayout = [];
 		for (let i = 0; i < this.containerHeightNum; i++) {
 			let gridLayoutLine = [];
 			for (let j = 0; j < this.containerWidthNum; j++) {
@@ -56,7 +68,9 @@ class Layout extends React.Component {
 			
 			gridLayout.push(gridLayoutLine);
 		}
+	}
 
+	boxingGridItems(line, gridLayout) {
 		/*
 			exception:
 			0 3*3
@@ -130,10 +144,6 @@ class Layout extends React.Component {
 			theLines[idx].leftNum = tempLeftStart;
 			theLines[idx].topNum = tempTopStart;
 		});
-
-		this.state = {
-			gridItemMatrix: line
-		};
 	}
 
 	componentDidMount() {
@@ -145,7 +155,29 @@ class Layout extends React.Component {
 	}
 
 	componentWillUpdate() {
+		// this.widthOffset = (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2;
+	}
 
+	componentDidUpdate() {
+
+	}
+
+	mouseDownHandler(event) {
+		let e = event;
+	}
+
+	mouseMoveHandler(event) {
+		let e = event;
+	}
+
+	mouseUpHandler(event) {
+		let e = event;
+		let x = e.clientX;
+		let y = e.clientY;
+		let leastIdx = 0;
+
+		let gridLayout = this.freshGridLayout();
+		
 	}
 
 	render() {
@@ -158,9 +190,9 @@ class Layout extends React.Component {
 			width: containerWidth,
 			height: "auto",
 			margin: "0 auto",
-			borderStyle: "solid",
-			borderWidth: 1,
-			borderColor: "red"
+			border: "none",
+			borderColor: "red",
+			display: "block"
 		};
 		this.state.gridItemMatrix.forEach((val, idx) => {
 			layout.push((<GridItem widthUnit={this.gridWidth}
@@ -169,7 +201,11 @@ class Layout extends React.Component {
 									heightNum={val.heightNum} 
 									leftNum={val.leftNum}
 									topNum={val.topNum}
-									itemIndex={val.itemIndex} />));
+									itemIndex={val.itemIndex}
+									widthOffset={(window.innerWidth - this.containerWidthNum * this.gridWidth) / 2} 
+									mouseDownHandler={this.mouseDownHandler.bind(this)}
+									mouseMoveHandler={this.mouseMoveHandler.bind(this)}
+									mouseUpHandler={this.mouseUpHandler.bind(this)} />));
 		});
 		return (<div style={containerStyle}>
 				{layout}
