@@ -18,22 +18,6 @@ class Layout extends React.Component {
 		for (let i = 0; i < 8; i++) {
 			let widthNumTemp = Math.ceil(Math.random() * 3);
 			let heightNumTemp = Math.ceil(Math.random() * 3);
-			// if (i === 0) {
-			// 	widthNumTemp = 3;
-			// 	heightNumTemp = 3;
-			// } else if (i === 1) {
-			// 	widthNumTemp = 1;
-			// 	heightNumTemp = 1;
-			// } else if (i === 2) {
-			// 	widthNumTemp = 3;
-			// 	heightNumTemp = 3;
-			// } else if (i === 3) {
-			// 	widthNumTemp = 1;
-			// 	heightNumTemp = 1;
-			// } else if (i === 4) {
-			// 	widthNumTemp = 2;
-			// 	heightNumTemp = 2;
-			// }
 
 			gridHeightNum += heightNumTemp;
 			line.push({
@@ -61,24 +45,22 @@ class Layout extends React.Component {
 	freshGridLayout() {
 		let gridLayout = [];
 		for (let i = 0; i < this.containerHeightNum; i++) {
+			let top = i * this.gridHeight;
 			let gridLayoutLine = [];
 			for (let j = 0; j < this.containerWidthNum; j++) {
-				gridLayoutLine.push(0);
+				gridLayoutLine.push({
+					value: 0,
+					left: j * this.gridWidth,
+					top: top
+				});
 			}
 			
 			gridLayout.push(gridLayoutLine);
 		}
+		return gridLayout;
 	}
 
 	boxingGridItems(line, gridLayout) {
-		/*
-			exception:
-			0 3*3
-			1 1*1
-			2 3*3
-			3 1*1
-			4 2*2
-		*/
 		line.forEach((val, idx, theLines) => {
 			let leftNumber = 0;
 			let rightNumber = 0;
@@ -90,30 +72,17 @@ class Layout extends React.Component {
 				let tempStart = 0;
 				let isAvailable = false;
 				gridLine.some((unit, jj, theLine) => {
-					//Mark the temp start of item
-					if (unit === 0 && capacity === 0) {
-						tempStart = jj;
-						capacity++;
-						if (jj === theLine.length - 1) {
-							if (capacity >= val.widthNum) {
-								//Judge whether the vertical capacity is enough or not.
-								for (let a = 0; a < val.heightNum; a++) {
-									if (gridLayout[ii + a][jj] > 0) {
-										return false;
-									}
-								}
-								isAvailable = true;
-								return true;
-							}
-						}
-					}
 					//Add capacity if unit is empty
-					else if (unit === 0) {
+					if (unit.value === 0) {
+						//Mark the temp start of item
+						if (capacity === 0) {
+							tempStart = jj;
+						}
 						capacity++;
 						if (capacity >= val.widthNum) {
 							//Judge whether the vertical capacity is enough or not.
 							for (let a = 0; a < val.heightNum; a++) {
-								if (gridLayout[ii + a][jj] > 0) {
+								if (theArray[ii + a][jj].value > 0) {
 									return false;
 								}
 							}
@@ -138,7 +107,7 @@ class Layout extends React.Component {
 			//Occupy the space with item number.
 			for (let ver = 0; ver < val.heightNum; ver++) {
 				for (let hor = 0; hor < val.widthNum; hor++) {
-					gridLayout[tempTopStart + ver][tempLeftStart + hor] = idx + 1;
+					gridLayout[tempTopStart + ver][tempLeftStart + hor].value = idx + 1;
 				}
 			}
 			theLines[idx].leftNum = tempLeftStart;
