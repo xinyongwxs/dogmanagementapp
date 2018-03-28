@@ -43,8 +43,8 @@ export default class GridItem extends React.Component {
 		return (<div style={gridItemStyle}
 		 			className="gridItem"
 		 			onMouseDown={this.props.mouseDownHandler}
-		 			onMouseMove={this.props.mouseMoveHandler}
-		 			onMouseUp={this.props.mouseUpHandler}
+		 			// onMouseMove={this.props.mouseMoveHandler}
+		 			// onMouseUp={this.props.mouseUpHandler}
 		 			>
 			{this.props.itemIndex}
 		</div>);

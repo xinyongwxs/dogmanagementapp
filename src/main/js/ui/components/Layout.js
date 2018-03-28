@@ -9,7 +9,10 @@ class Layout extends React.Component {
 		this.gridWidth = 150;
 		this.gridHeight = 100;
 		this.containerWidthNum = 7;
-		this.widthOffset = 0;
+		this.dragDrop = {
+			selectedItem: null,
+			isStart: false
+		};
 		let line = [];
 		let gridLayout = [];
 		let gridHeightNum = 0;
@@ -60,7 +63,17 @@ class Layout extends React.Component {
 		return gridLayout;
 	}
 
-	boxingGridItems(line, gridLayout) {
+	boxingGridItems(line, gridLayout, occupiedGrid, gridItem) {
+		if (occupiedGrid && gridItem) {
+			let leftNum = occupiedGrid.left / this.gridWidth;
+			let topNum = occupiedGrid.top / this.gridHeight;
+			//Specific gridItem occupy grid first
+			for (let i = 0; i < gridItem.heightNum; i++) {
+				for (let j = 0; j < gridItem.widthNum; j++) {
+					gridLayout[i + topNum][j + leftNum].value = gridItem.itemIndex + 1;
+				}
+			}
+		}
 		line.forEach((val, idx, theLines) => {
 			let leftNumber = 0;
 			let rightNumber = 0;
@@ -131,34 +144,47 @@ class Layout extends React.Component {
 
 	}
 
-	mouseDownHandler(event) {
-		let e = event;
+	mouseDownHandler(gridItem, event) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.dragDrop.isStart = true;
+		this.selectedItem = gridItem;
 	}
 
 	mouseMoveHandler(event) {
-		let e = event;
+		event.preventDefault();
+		event.stopPropagation();
+		if (this.dragDrop.isStart) {
+			let gridItem = this.selectedItem;
+			let e = event;
+			let x = e.clientX;
+			let y = e.clientY;
+			let leastIdx = 0;
+			let widthOffset = (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2;
+			let gridLayout = this.freshGridLayout();
+			let min = gridLayout[0][0];
+			gridLayout.forEach((li, lineNum) => {
+				li.forEach((item, idx) => {
+					let tempDistance = Math.sqrt((widthOffset + min.left + this.gridWidth / 2 - x) * (widthOffset + min.left + this.gridWidth / 2 - x) + (min.top + this.gridHeight / 2 - y) * (min.top + this.gridHeight / 2 - y));
+					let itemDistance = Math.sqrt((widthOffset + item.left + this.gridWidth / 2 - x) * (widthOffset + item.left + this.gridWidth / 2 - x) + (item.top + this.gridHeight / 2 - y) * (item.top + this.gridHeight / 2 - y));
+					if (tempDistance > itemDistance) {
+						min = item;
+					}
+				});
+			});
+			//Pass the specific item object, update the leftNum and topNum and then 
+			//occupy the grids according to the grid which is the nearest to the selected item first,
+			// the second or the last, reorg the other grid items.
+			let currState = Object.assign({}, this.state);
+			this.boxingGridItems(currState.gridItemMatrix, gridLayout, min, gridItem);
+			this.setState(currState);
+		}
 	}
 
 	mouseUpHandler(event) {
-		let e = event;
-		let x = e.clientX;
-		let y = e.clientY;
-		let leastIdx = 0;
-
-		let gridLayout = this.freshGridLayout();
-		let min = gridLayout[0][0];
-		gridLayout.forEach((li, lineNum) => {
-			li.forEach((item, idx) => {
-				let tempDistance = Math.sqrt((min.left - x) * (min.left - x) + (min.top - y) * (min.top - y));
-				let itemDistance = Math.sqrt((item.left - x) * (item.left - x) + (item.top - y) * (item.top - y));
-				if (tempDistance > itemDistance) {
-					min = item;
-				}
-			});
-		});
-		//Pass the specific item object, update the leftNum and topNum and then 
-		//occupy the grids according to the grid which is the nearest to the selected item first,
-		// the second or the last, reorg the other grid items.
+		event.preventDefault();
+		event.stopPropagation();
+		this.dragDrop.isStart = false;
 	}
 
 	render() {
@@ -183,8 +209,8 @@ class Layout extends React.Component {
 									leftNum={val.leftNum}
 									topNum={val.topNum}
 									itemIndex={val.itemIndex}
-									widthOffset={(window.innerWidth - this.containerWidthNum * this.gridWidth) / 2} 
-									mouseDownHandler={this.mouseDownHandler.bind(this)}
+									widthOffset={(window.innerWidth - this.containerWidthNum * this.gridWidth) / 2}
+									mouseDownHandler={this.mouseDownHandler.bind(this, val)}
 									mouseMoveHandler={this.mouseMoveHandler.bind(this)}
 									mouseUpHandler={this.mouseUpHandler.bind(this)} />));
 		});
