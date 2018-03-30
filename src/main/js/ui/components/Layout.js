@@ -129,7 +129,8 @@ class Layout extends React.Component {
 	}
 
 	componentDidMount() {
-
+		window.onmousemove = this.mouseMoveHandler.bind(this);
+		window.onmouseup = this.mouseUpHandler.bind(this);
 	}
 
 	componentWillMount() {
@@ -211,8 +212,9 @@ class Layout extends React.Component {
 									itemIndex={val.itemIndex}
 									widthOffset={(window.innerWidth - this.containerWidthNum * this.gridWidth) / 2}
 									mouseDownHandler={this.mouseDownHandler.bind(this, val)}
-									mouseMoveHandler={this.mouseMoveHandler.bind(this)}
-									mouseUpHandler={this.mouseUpHandler.bind(this)} />));
+									// mouseMoveHandler={this.mouseMoveHandler.bind(this)}
+									// mouseUpHandler={this.mouseUpHandler.bind(this)} 
+									/>));
 		});
 		return (<div style={containerStyle}>
 				{layout}
