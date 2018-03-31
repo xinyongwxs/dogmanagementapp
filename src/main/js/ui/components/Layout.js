@@ -11,7 +11,11 @@ class Layout extends React.Component {
 		this.containerWidthNum = 7;
 		this.dragDrop = {
 			selectedItem: null,
-			isStart: false
+			isStart: false,
+			startX: 0,
+			startY: 0,
+			InnerOffsetX: 0,
+			InnerOffsetY: 0
 		};
 		let line = [];
 		let gridLayout = [];
@@ -28,6 +32,8 @@ class Layout extends React.Component {
 				heightNum: widthNumTemp,
 				leftNum: 0,
 				topNum: 0,
+				top: 0,
+				left: 0,
 				itemIndex: i
 			});
 		}
@@ -53,7 +59,7 @@ class Layout extends React.Component {
 			for (let j = 0; j < this.containerWidthNum; j++) {
 				gridLayoutLine.push({
 					value: 0,
-					left: j * this.gridWidth,
+					left: j * this.gridWidth + (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2,
 					top: top
 				});
 			}
@@ -65,20 +71,40 @@ class Layout extends React.Component {
 
 	boxingGridItems(line, gridLayout, occupiedGrid, gridItem) {
 		if (occupiedGrid && gridItem) {
-			let leftNum = occupiedGrid.left / this.gridWidth;
+			let leftNum = (occupiedGrid.left - ((window.innerWidth - this.containerWidthNum * this.gridWidth) / 2)) / this.gridWidth;
 			let topNum = occupiedGrid.top / this.gridHeight;
+			if (leftNum + gridItem.widthNum > this.containerWidthNum || 
+				topNum + gridItem.heightNum > this.containerHeightNum) {
+				return false;
+			}
 			//Specific gridItem occupy grid first
 			for (let i = 0; i < gridItem.heightNum; i++) {
 				for (let j = 0; j < gridItem.widthNum; j++) {
 					gridLayout[i + topNum][j + leftNum].value = gridItem.itemIndex + 1;
 				}
 			}
+
+			line.some((val, idx, theLines) => {
+				if (val.itemIndex === gridItem.itemIndex) {
+					theLines[idx].leftNum = (occupiedGrid.left - ((window.innerWidth - this.containerWidthNum * this.gridWidth) / 2)) / this.gridWidth;
+					theLines[idx].topNum = occupiedGrid.top / this.gridHeight;
+					theLines[idx].left = theLines[idx].leftNum * this.gridWidth + (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2;
+					theLines[idx].top = theLines[idx].topNum * this.gridHeight;
+					return true;
+				}
+			});
 		}
+
+
+
 		line.forEach((val, idx, theLines) => {
 			let leftNumber = 0;
 			let rightNumber = 0;
 			let tempLeftStart = 0;
 			let tempTopStart = 0;
+			if (occupiedGrid && gridItem && gridItem.itemIndex === val.itemIndex) {
+				return true;
+			}
 			// theLines[idx].itemIndex = idx;
 			gridLayout.some((gridLine, ii, theArray) => {
 				let capacity = 0;
@@ -95,9 +121,12 @@ class Layout extends React.Component {
 						if (capacity >= val.widthNum) {
 							//Judge whether the vertical capacity is enough or not.
 							for (let a = 0; a < val.heightNum; a++) {
-								if (theArray[ii + a][jj].value > 0) {
-									return false;
+								for (let b = 0; b < val.widthNum; b++) {
+									if (theArray[ii + a][tempStart + b].value > 0) {
+										return false;
+									}
 								}
+
 							}
 							isAvailable = true;
 							return true;
@@ -125,7 +154,11 @@ class Layout extends React.Component {
 			}
 			theLines[idx].leftNum = tempLeftStart;
 			theLines[idx].topNum = tempTopStart;
+			theLines[idx].left = tempLeftStart * this.gridWidth + (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2;
+			theLines[idx].top = tempTopStart * this.gridHeight;
 		});
+
+		return true;
 	}
 
 	componentDidMount() {
@@ -150,6 +183,10 @@ class Layout extends React.Component {
 		event.stopPropagation();
 		this.dragDrop.isStart = true;
 		this.selectedItem = gridItem;
+		this.dragDrop.startX = event.clientX;
+		this.dragDrop.startY = event.clientY;
+		this.dragDrop.InnerOffsetX = event.clientX - gridItem.left;
+		this.dragDrop.InnerOffsetY = event.clientY - gridItem.top;
 	}
 
 	mouseMoveHandler(event) {
@@ -160,14 +197,43 @@ class Layout extends React.Component {
 			let e = event;
 			let x = e.clientX;
 			let y = e.clientY;
-			let leastIdx = 0;
+			// let distanceX = x - this.dragDrop.startX;
+			// let distanceY = y - this.dragDrop.startY;
+
+			// let originX = gridItem.left;
+			// let originY = gridItem.top;
+			// gridItem.left = originX + distanceX;
+			// gridItem.top = originY + distanceY;
+			let currState = Object.assign({}, this.state);
+			currState.gridItemMatrix.some((item, idx) => {
+				if (item.itemIndex === gridItem.itemIndex) {
+					item.left = x - (this.gridWidth * item.widthNum) / 2;
+					item.top = y - (this.gridHeight * item.heightNum) / 2;
+					return true;
+				}
+			});
+			this.setState(currState);
+		}
+	}
+
+	mouseUpHandler(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		if (this.dragDrop.isStart) {
+			let x = event.clientX;
+			let y = event.clientY;
+			this.dragDrop.isStart = false;
 			let widthOffset = (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2;
 			let gridLayout = this.freshGridLayout();
 			let min = gridLayout[0][0];
 			gridLayout.forEach((li, lineNum) => {
 				li.forEach((item, idx) => {
-					let tempDistance = Math.sqrt((widthOffset + min.left + this.gridWidth / 2 - x) * (widthOffset + min.left + this.gridWidth / 2 - x) + (min.top + this.gridHeight / 2 - y) * (min.top + this.gridHeight / 2 - y));
-					let itemDistance = Math.sqrt((widthOffset + item.left + this.gridWidth / 2 - x) * (widthOffset + item.left + this.gridWidth / 2 - x) + (item.top + this.gridHeight / 2 - y) * (item.top + this.gridHeight / 2 - y));
+					// let tempDistance = Math.sqrt((min.left + this.gridWidth / 2 - x) * (min.left + this.gridWidth / 2 - x) + (min.top + this.gridHeight / 2 - y) * (min.top + this.gridHeight / 2 - y));
+					// let itemDistance = Math.sqrt((item.left + this.gridWidth / 2 - x) * (item.left + this.gridWidth / 2 - x) + (item.top + this.gridHeight / 2 - y) * (item.top + this.gridHeight / 2 - y));
+					let tempDistance = Math.sqrt((min.left - (x - this.dragDrop.InnerOffsetX)) * (min.left - (x - this.dragDrop.InnerOffsetX)) + 
+						(min.top - (y - this.dragDrop.InnerOffsetY)) * (min.top - (y - this.dragDrop.InnerOffsetY)));
+					let itemDistance = Math.sqrt((item.left - (x - this.dragDrop.InnerOffsetX)) * (item.left - (x - this.dragDrop.InnerOffsetX)) + 
+						(item.top - (y - this.dragDrop.InnerOffsetY)) * (item.top - (y - this.dragDrop.InnerOffsetY)));
 					if (tempDistance > itemDistance) {
 						min = item;
 					}
@@ -177,15 +243,12 @@ class Layout extends React.Component {
 			//occupy the grids according to the grid which is the nearest to the selected item first,
 			// the second or the last, reorg the other grid items.
 			let currState = Object.assign({}, this.state);
-			this.boxingGridItems(currState.gridItemMatrix, gridLayout, min, gridItem);
-			this.setState(currState);
+			let canBox = this.boxingGridItems(currState.gridItemMatrix, gridLayout, min, this.selectedItem);
+			if (canBox) {
+				this.setState(currState);
+			}
 		}
-	}
 
-	mouseUpHandler(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		this.dragDrop.isStart = false;
 	}
 
 	render() {
@@ -209,6 +272,8 @@ class Layout extends React.Component {
 									heightNum={val.heightNum} 
 									leftNum={val.leftNum}
 									topNum={val.topNum}
+									top={val.top}
+									left={val.left}
 									itemIndex={val.itemIndex}
 									widthOffset={(window.innerWidth - this.containerWidthNum * this.gridWidth) / 2}
 									mouseDownHandler={this.mouseDownHandler.bind(this, val)}

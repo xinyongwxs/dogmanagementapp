@@ -26,6 +26,8 @@ export default class GridItem extends React.Component {
 		let heightNum = this.props.heightNum;
 		let leftNum = this.props.leftNum;
 		let topNum = this.props.topNum;
+		let left = this.props.left;
+		let top = this.props.top;
 
 		let gridItemStyle = {
 			width: widthNum * widthUnit,
@@ -33,8 +35,10 @@ export default class GridItem extends React.Component {
 			borderStyle: "solid",
 			borderWidth: 1,
 			position: "absolute",
-			left: leftNum * widthUnit + this.props.widthOffset,
-			top: topNum * heightUnit,
+			// left: leftNum * widthUnit + this.props.widthOffset,
+			// top: topNum * heightUnit,
+			left: left,
+			top: top,
 			backgroundColor: "blue",
 			textAlign: "center",
 			fontSize: 40,
