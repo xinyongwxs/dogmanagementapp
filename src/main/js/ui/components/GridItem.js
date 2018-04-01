@@ -28,6 +28,7 @@ export default class GridItem extends React.Component {
 		let topNum = this.props.topNum;
 		let left = this.props.left;
 		let top = this.props.top;
+		let zIndex = this.props.zIndex;
 
 		let gridItemStyle = {
 			width: widthNum * widthUnit,
@@ -42,7 +43,8 @@ export default class GridItem extends React.Component {
 			backgroundColor: "blue",
 			textAlign: "center",
 			fontSize: 40,
-			lineHeight: heightNum * heightUnit + "px"
+			lineHeight: heightNum * heightUnit + "px",
+			zIndex: zIndex
 		};
 		return (<div style={gridItemStyle}
 		 			className="gridItem"

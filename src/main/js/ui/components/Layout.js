@@ -34,7 +34,8 @@ class Layout extends React.Component {
 				topNum: 0,
 				top: 0,
 				left: 0,
-				itemIndex: i
+				itemIndex: i,
+				zIndex: 1
 			});
 		}
 
@@ -90,6 +91,7 @@ class Layout extends React.Component {
 					theLines[idx].topNum = occupiedGrid.top / this.gridHeight;
 					theLines[idx].left = theLines[idx].leftNum * this.gridWidth + (window.innerWidth - this.containerWidthNum * this.gridWidth) / 2;
 					theLines[idx].top = theLines[idx].topNum * this.gridHeight;
+					theLines[idx].zIndex = 1;
 					return true;
 				}
 			});
@@ -209,6 +211,7 @@ class Layout extends React.Component {
 				if (item.itemIndex === gridItem.itemIndex) {
 					item.left = x - (this.gridWidth * item.widthNum) / 2;
 					item.top = y - (this.gridHeight * item.heightNum) / 2;
+					item.zIndex = 2;
 					return true;
 				}
 			});
@@ -228,8 +231,6 @@ class Layout extends React.Component {
 			let min = gridLayout[0][0];
 			gridLayout.forEach((li, lineNum) => {
 				li.forEach((item, idx) => {
-					// let tempDistance = Math.sqrt((min.left + this.gridWidth / 2 - x) * (min.left + this.gridWidth / 2 - x) + (min.top + this.gridHeight / 2 - y) * (min.top + this.gridHeight / 2 - y));
-					// let itemDistance = Math.sqrt((item.left + this.gridWidth / 2 - x) * (item.left + this.gridWidth / 2 - x) + (item.top + this.gridHeight / 2 - y) * (item.top + this.gridHeight / 2 - y));
 					let tempDistance = Math.sqrt((min.left - (x - this.dragDrop.InnerOffsetX)) * (min.left - (x - this.dragDrop.InnerOffsetX)) + 
 						(min.top - (y - this.dragDrop.InnerOffsetY)) * (min.top - (y - this.dragDrop.InnerOffsetY)));
 					let itemDistance = Math.sqrt((item.left - (x - this.dragDrop.InnerOffsetX)) * (item.left - (x - this.dragDrop.InnerOffsetX)) + 
@@ -277,6 +278,7 @@ class Layout extends React.Component {
 									itemIndex={val.itemIndex}
 									widthOffset={(window.innerWidth - this.containerWidthNum * this.gridWidth) / 2}
 									mouseDownHandler={this.mouseDownHandler.bind(this, val)}
+									zIndex={val.zIndex}
 									// mouseMoveHandler={this.mouseMoveHandler.bind(this)}
 									// mouseUpHandler={this.mouseUpHandler.bind(this)} 
 									/>));
